@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    /*titulo */
+    <title>MEIA</title>
+    <style>
+        body, #chat-container, #chat-messages, #user-input {
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        body {
+            background-color: black;
+        }
+        #chat-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        #chat-messages {
+            height: 300px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        #user-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: black;
+        }
+    </style>
+</head>
+<body onload="handleOnLoad()">
+    <script>
+        /*el scrip podria ser donde el usuario al momento de picarle enter  guarda el valor y imprime en vista tambien se puede encontrar un json o algo asi se puede decir 
+        tambien se da el valor a MEIA cconforme el usuario meta los comandos ya establecidos y donde agarra la tecla enter como accion con el comando 
+        keypressed */
+        function handleOnLoad() {
+            console.log("Loaded");
+        }
+       function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            document.getElementById('user-input').value = '';
+
+            var knownAnswersByKeywords = {
+                'hola': 'hola como estas soy meia tu asistente personal.. para mas informacion puede consultar ayuda con el siguiente comando : /help',
+                '/help': '<br>matematicas, <br> jugar <br> quien te creo? <br> sabes hablar ingles <br> hola como estas <br> hola como etas <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IA que te pueda ayudar',
+                'matematicas': 'Las matemáticas, o también la matemática ​​​ son una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. Hoy en día se suele aceptar que la matemática es una ciencia que investiga patrones.. si quieres saber algo mas relacionado o algo en concreto puedes buscar en <a href="https://es.wikipedia.org/wiki/Matemáticas">wikipedia</a>  si quieres saber de otra cosa usa estos comandos :calculo diferencial, algebra,',
+            };
+
+            /*switch(userInput.toLowerCase()) {
+                case 'hola':
+                    message = 'hola como estas soy meia tu asistente personal';
+                    break;
+                case 'quien te creo ?':
+                    message = 'mis creadores son Moises, Bryan  y cristhopher';
+                    break;
+                case 'matematicas':
+                    message = 'hola por el momento no tengo resultados dados sobre matematicas pero si gustaas puedes cnsultar';
+                    break;
+                case 'jugar':
+                    message = 'yes ha war yu';
+                    break;
+               case '':
+                    message = 'yes ha war yu';
+                    break;
+               case 'sabes hablar ingles':
+                    message = 'yes ha war yu';
+                    break;
+               case 'sabes hablar ingles':
+                    message = 'yes ha war yu';
+                    break;
+
+                case 'pipi':
+                    message = 'pipipii ingresa un resultado';
+                    break;
+                case '/help':
+                    message = 'matematicas, <br> jugar <br> quien te creo? <br> sabes hablar ingles <br> hola como estas <br> hola como etas <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IA que te pueda ayudar';
+                    break;
+                case 'hola como estas':
+                    message = 'hola yo bien y tu';
+                    break;
+                case 'jugar':
+                    message = 'te estan siguiendo que haces, quieto';
+                    break;
+                case 'correr':
+                    message = 'bien te has ido muy lejos a donde iras, casa , cueva';
+                    break;
+                case 'quieto':
+                    message = 'el te a encontrado moriste';
+                    break;
+                case 'casa':
+                    message = 'bien sobreviviste a eso en hora buena ';
+                    break;
+                case 'el te sigue todavia q haras atacar, uir':
+                    message = 'hola yo bien y tu';
+                    break;
+                case 'atacar':
+                    message = 'mala desicion';
+                    break;
+                case 'uir':
+                    message = 'felicidades has sobrevivido';
+                    break;
+               default:
+                    message = 'perdon esa informacion no te la puedo dar por el momento.';
+                    break;
+            }*/
+            let message = knownAnswersByKeywords[userInput.toLowerCase()];
+            var messageElement = document.createElement('div');
+            messageElement.innerHTML = '<strong>You:</strong> ' + userInput;
+
+            document.getElementById('chat-messages').appendChild(messageElement);
+
+            var responseElement = document.createElement('div');
+            responseElement.innerHTML = '<strong>MEIA:</strong> ' + (message ? message : 'Soy MEIA, tu Maestro Educativo de IA.');
+
+            document.getElementById('chat-messages').appendChild(responseElement);
+        }
+
+        function handleKeyPress(event) {
+            console.log(event);
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+    </div>
+</body>
+</html>
