@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <h2>Bienvenido a MEIA tu asistente personal</h2>
-    <h3>puede que algunas caracteristicas no funcionen por el momento</h3>..
     <title>MEIA</title>
     <style>
         /* Estilos para el cuerpo */
@@ -41,12 +39,18 @@
 
     <script>
         var previousChat = ''; // Variable para guardar el chat anterior
+        function handleOnLoad() {
+            // Agregar mensaje de bienvenida
+            addMessage("<strong>MEIA:</strong> Hola, soy tu asistente personal MEIA.");
+            addMessage("<strong>MEIA:</strong> te preguntas que es MEIA pues yo te digo significa Maestro educativo de Inteligencia Artificial.");
+            // Agregar advertencia sobre características no funcionales
+            addMessage("<strong>MEIA:</strong> Algunas características pueden no funcionar correctamente en este momento pero intentamos mejorar mi sofwere.");
+        }
+
         /*el scrip podria ser donde el usuario al momento de picarle enter  guarda el valor y imprime en vista tambien se puede encontrar un json o algo asi se puede decir 
         tambien se da el valor a MEIA cconforme el usuario meta los comandos ya establecidos y donde agarra la tecla enter como accion con el comando 
         keypressed */
-        function handleOnLoad() {
-            console.log("Loaded");
-        }
+       
        function sendMessage() {
             var userInput = document.getElementById('user-input').value;
             document.getElementById('user-input').value = '';
@@ -165,6 +169,17 @@
         // Función para crear un nuevo chat cargando la conversación anterior
         function createNewChat() {
             document.getElementById('chat-messages').innerHTML = previousChat;
+        }
+        function addMessage(messageText) {
+            // Crear un elemento div para el mensaje y establecer su contenido
+            var messageElement = document.createElement('div');
+            messageElement.innerHTML = messageText;
+
+            // Agregar el mensaje al contenedor de mensajes del chat
+            document.getElementById('chat-messages').appendChild(messageElement);
+
+            // Guardar el mensaje en la conversación actual
+            previousChat += messageElement.outerHTML;
         }
     </script>
     <!--Contenedor del chat-->
