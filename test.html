@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    /*titulo */
+    <h2>Bienvenido a MEIA tu asistente personal</h2>
+    <h3>puede que algunas caracteristicas no funcionen por el momento</h3>..
     <title>MEIA</title>
     <style>
+        /* Estilos para el cuerpo */
         body, #chat-container, #chat-messages, #user-input {
             font-family: Arial, sans-serif;
-            color: white;
+            color: rgb(2, 2, 2);
         }
         body {
-            background-color: black;
+            background-color: #85e4f0
         }
         #chat-container {
-            border: 1px solid #ccc;
-            padding: 10px;
-            max-width: 400px;
+            border: 2px solid #000000;
+            padding: 15px;
+            max-width: 500px;
             margin: 0 auto;
         }
         #chat-messages {
-            height: 300px;
-            overflow-y: scroll;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 10px;
+            height: 298px;
+            overflow-y: auto;
+            border-bottom: 3px solid #ffffff;
+            margin-bottom: 15px;
         }
         #user-input {
-            width: 100%;
+            width: 97%;
             padding: 5px;
-            border: 1px solid #ccc;
-            background-color: black;
+            border: 2px solid #000000;
+            background-color: rgb(255, 255, 255);
         }
     </style>
 </head>
 <body onload="handleOnLoad()">
+    <!-- Botón para reiniciar la conversación -->
+    <button onclick="clearConversation()">Reiniciar Conversación</button>
+    <!-- Botón para guardar la conversación -->
+    <button onclick="createNewChat()">guardar chat</button>
+
     <script>
+        var previousChat = ''; // Variable para guardar el chat anterior
         /*el scrip podria ser donde el usuario al momento de picarle enter  guarda el valor y imprime en vista tambien se puede encontrar un json o algo asi se puede decir 
         tambien se da el valor a MEIA cconforme el usuario meta los comandos ya establecidos y donde agarra la tecla enter como accion con el comando 
         keypressed */
@@ -42,13 +50,25 @@
        function sendMessage() {
             var userInput = document.getElementById('user-input').value;
             document.getElementById('user-input').value = '';
-
+           //palabras clave a respuestas predefinidas
             var knownAnswersByKeywords = {
-                'hola': 'hola como estas soy meia tu asistente personal.. para mas informacion puede consultar ayuda con el siguiente comando : /help',
-                '/help': '<br>matematicas, <br> jugar <br> quien te creo? <br> sabes hablar ingles <br> hola como estas <br> hola como etas <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IA que te pueda ayudar',
-                'matematicas': 'Las matemáticas, o también la matemática ​​​ son una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. Hoy en día se suele aceptar que la matemática es una ciencia que investiga patrones.. si quieres saber algo mas relacionado o algo en concreto puedes buscar en <a href="https://es.wikipedia.org/wiki/Matemáticas">wikipedia</a>  si quieres saber de otra cosa usa estos comandos :calculo diferencial, algebra,',
-            };
+                'hola': 'hola como estas soy meia tu asistente personal.. para mas informacion puede consultar ayuda con el siguiente comando : /help <br>.',
+                'ayuda': '<br>matematicas, <br> algebra, <br> quien te creo <br> calculo diferencial, <br> programacion, <br> hola como etas, <br> ciencia, <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IA que te pueda ayudar <br>.',
+                'matematicas': 'Las matemáticas, o también la matemática ​​​ son una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. Hoy en día se suele aceptar que la matemática es una ciencia que investiga patrones.. si quieres saber algo mas relacionado o algo en concreto puedes buscar en <a href="https://es.wikipedia.org/wiki/Matemáticas">wikipedia</a>  si quieres saber de otra cosa usa estos comandos :calculo diferencial, algebra, <br>.',
+                'calculo diferencial': 'si mal no recuerdo es El cálculo diferencial es una parte del cálculo infinitesimal y del análisis matemático que estudia cómo cambian las funciones continuas según sus variables cambian de estado no tengo toda la informacion pero te puedes apoyar de esta pagina de <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjb7vSYm_CEAxW_MDQIHQYqAqAQmhN6BAhOEAI&url=https%3A%2F%2Fes.wikipedia.org%2Fwiki%2FC%25C3%25A1lculo_diferencial&usg=AOvVaw07iV_O3KLHIY4kpAWYLPxq&opi=89978449">calculo</a> <br>.',
+                'algebra': 'El álgebra es la rama de la matemática que estudia la combinación de elementos como números, letras y signos para elaborar diferentes operaciones aritméticas elementales.una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. si quieres saber algo mas relacionado o algo en concreto puedes buscar en la sig pagina : <a href="https://www.ferrovial.com/es/stem/algebra/#:~:text=¿Qué%20es%20el%20álgebra%3F,elaborar%20diferentes%20operaciones%20aritméticas%20elementales.">algebra</a>, <br>.',
+                'ciencia' : '',
+                'biologia' : '',
+                'quimica': '',
+                'quien te creo' : 'mis creadores en este caso serian Santos Mijares Moises Eli, verdugo Bryan Alberto, Moreno Arechiga Cristopher',
+                'programacion': 'algunos prinsipios son las variables, sintaxis algoritmos, editores te texto etc, para saber mas esriba: algoritmos, sintax, editores de texto',
+                'sintax' : 'la sintaxis es lo que representa un lenguaje y su forma de codificar ',
+                'ingles': 'el idioma ingles es una herramienta fundamental en el mundo moderno, siendo utilizado como un medio de comunicacion global en diversos ambitos como negocios, tecnologia, etc, aprenderemos sobre diferentes tiempos verbales como el presente simple, pasado continuo y futuro perfecto asi como el uso de verbos modales como "can","should" y "must"',
+                'hola como etas' : 'hola estoy muy bien y tu',
+                'te quiero' : 'yo no pinche feo puto',
 
+            }; 
+            
             /*switch(userInput.toLowerCase()) {
                 case 'hola':
                     message = 'hola como estas soy meia tu asistente personal';
@@ -113,21 +133,46 @@
             document.getElementById('chat-messages').appendChild(messageElement);
 
             var responseElement = document.createElement('div');
-            responseElement.innerHTML = '<strong>MEIA:</strong> ' + (message ? message : 'Soy MEIA, tu Maestro Educativo de IA.');
+
+           /* for (var i = 0; i < message.length; i++) {
+                let outputMessage = message.substring(0, i);
+                responseElement.innerHTML = '<strong>MEIA:</strong> ' + (outputMessage ? outputMessage : 'Hola soy meia para ver otros comandos ponga ayuda <br>.');
+            }*/
+
+            responseElement.innerHTML = '<strong>MEIA:</strong> ' + (message ? message : 'Hola soy meia para ver otros comandos ponga ayuda <br>.');
 
             document.getElementById('chat-messages').appendChild(responseElement);
+           
+            // Guardar la conversación actual
+            previousChat += messageElement.outerHTML + responseElement.outerHTML;
         }
 
-        function handleKeyPress(event) {
-            console.log(event);
+       // Función para manejar la pulsación de tecla
+       function handleKeyPress(event) {
             if (event.key === 'Enter') {
                 sendMessage();
             }
+            
+            
+        }
+       // Función para borrar la conversación actual
+       function clearConversation() {
+            // Guardar la conversación actual antes de borrarla
+            previousChat = document.getElementById('chat-messages').innerHTML;
+            document.getElementById('chat-messages').innerHTML = '';
+        }
+
+        // Función para crear un nuevo chat cargando la conversación anterior
+        function createNewChat() {
+            document.getElementById('chat-messages').innerHTML = previousChat;
         }
     </script>
+    <!--Contenedor del chat-->
     <div id="chat-container">
+        <!-- Contenedor de mensajes del chat-->
         <div id="chat-messages"></div>
-        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <!-- Entrada de texto para que el usuario escriba mensajes -->
+        <input type="text" id="user-input" placeholder="escribe aqui" onkeypress="handleKeyPress(event)">
     </div>
 </body>
 </html>
