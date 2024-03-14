@@ -33,9 +33,9 @@
 </head>
 <body onload="handleOnLoad()">
     <!-- Botón para reiniciar la conversación -->
-    <button onclick="clearConversation()">Reiniciar Conversación</button>
+    <button onclick="clearConversation()">Nuevo Chat</button>
     <!-- Botón para guardar la conversación -->
-    <button onclick="createNewChat()">guardar chat</button>
+    <button onclick="createNewChat()">guardar y regresar</button>
 
     <script>
         var previousChat = ''; // Variable para guardar el chat anterior
@@ -130,26 +130,35 @@
                     message = 'perdon esa informacion no te la puedo dar por el momento.';
                     break;
             }*/
-            let message = knownAnswersByKeywords[userInput.toLowerCase()];
+           // Buscar palabras clave en el mensaje del usuario
+    for (var keyword in knownAnswersByKeywords) {
+        if (userInput.toLowerCase().includes(keyword)) {
             var messageElement = document.createElement('div');
             messageElement.innerHTML = '<strong>You:</strong> ' + userInput;
-
             document.getElementById('chat-messages').appendChild(messageElement);
 
             var responseElement = document.createElement('div');
-
-           /* for (var i = 0; i < message.length; i++) {
-                let outputMessage = message.substring(0, i);
-                responseElement.innerHTML = '<strong>MEIA:</strong> ' + (outputMessage ? outputMessage : 'Hola soy meia para ver otros comandos ponga ayuda <br>.');
-            }*/
-
-            responseElement.innerHTML = '<strong>MEIA:</strong> ' + (message ? message : 'Hola soy meia para ver otros comandos ponga ayuda <br>.');
-
+            responseElement.innerHTML = '<strong>MEIA:</strong> ' + knownAnswersByKeywords[keyword];
             document.getElementById('chat-messages').appendChild(responseElement);
-           
+
             // Guardar la conversación actual
             previousChat += messageElement.outerHTML + responseElement.outerHTML;
+            return; // Salir de la función después de encontrar la primera coincidencia
         }
+    }
+
+    // Si no se encontró ninguna palabra clave, enviar un mensaje predeterminado
+    var messageElement = document.createElement('div');
+    messageElement.innerHTML = '<strong>You:</strong> ' + userInput;
+    document.getElementById('chat-messages').appendChild(messageElement);
+
+    var responseElement = document.createElement('div');
+    responseElement.innerHTML = '<strong>MEIA:</strong> Lo siento, no tengo información sobre eso.';
+    document.getElementById('chat-messages').appendChild(responseElement);
+
+    // Guardar la conversación actual
+    previousChat += messageElement.outerHTML + responseElement.outerHTML;
+}
 
        // Función para manejar la pulsación de tecla
        function handleKeyPress(event) {
