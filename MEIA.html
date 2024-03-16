@@ -11,7 +11,7 @@
             color: rgb(2, 2, 2);
         }
         body {
-            background-color: #cdf6fc
+            background-color: #6387b5
         }
         #chat-container {
             border: 2px solid #000000;
@@ -32,7 +32,7 @@
             background-color: rgb(255, 255, 255);
         }
         button {
-            background-color: #4CAF50; 
+            background-color: #1807d8; 
             color: white; 
             padding: 1px 2px;
             border: none; 
@@ -46,7 +46,7 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #5b52c2;
         }
         
         
@@ -56,14 +56,14 @@
     <!-- Botón para reiniciar la conversación -->
     <button onclick="clearConversation()">Nuevo Chat</button>
     <!-- Botón para guardar la conversación -->
-    <button onclick="createNewChat()">guardar y regresar</button>
+    <!--<button onclick="createNewChat()">guardar y regresar</button>-->
 
     <script>
         var previousChat = ''; // Variable para guardar el chat anterior
         function handleOnLoad() {
             // Agregar mensaje de bienvenida
             addMessage("<strong>MEIA:</strong> Hola, soy tu asistente personal MEIA.");
-            addMessage("<strong>MEIA:</strong> te preguntas que es MEIA pues yo te digo significa Maestro educativo de Inteligencia Artificial.");
+        
             // Agregar advertencia sobre características no funcionales
             addMessage("<strong>MEIA:</strong> Algunas características pueden no funcionar correctamente en este momento pero intentamos mejorar mi sofwere.");
         }
@@ -78,42 +78,10 @@
            //palabras clave a respuestas predefinidas
             var knownAnswersByKeywords = {
                 'hola': 'hola como estas soy MEIA tu asistente personal, si deseas consultar la lista de palabras clave escribe la palabara "ayuda" <br>.',
-                'ayuda': '<br> claro, aqui tienes una ayuda con algunas palabras clave que puedes usar para consultar alguna duda que tengas <br> matematicas, <br> algebra, <br> quien te creo <br> calculo diferencial, <br> programacion, <br> hola como etas, <br> ciencia, <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IAG que te pueda ayudar <br>.',
-                'matematicas': 'Las matemáticas, o también la matemática ​​​ son una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. Hoy en día se suele aceptar que la matemática es una ciencia que investiga patrones.. si quieres saber algo mas relacionado o algo en concreto puedes buscar en <a href="https://es.wikipedia.org/wiki/Matemáticas">wikipedia</a>  si quieres saber de otra cosa usa estos comandos :calculo diferencial, algebra, <br>.',
-                'calculo diferencial': 'si mal no recuerdo es El cálculo diferencial es una parte del cálculo infinitesimal y del análisis matemático que estudia cómo cambian las funciones continuas según sus variables cambian de estado no tengo toda la informacion pero te puedes apoyar de esta pagina de <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjb7vSYm_CEAxW_MDQIHQYqAqAQmhN6BAhOEAI&url=https%3A%2F%2Fes.wikipedia.org%2Fwiki%2FC%25C3%25A1lculo_diferencial&usg=AOvVaw07iV_O3KLHIY4kpAWYLPxq&opi=89978449">calculo</a> <br>.',
-                'algebra': 'El álgebra es la rama de la matemática que estudia la combinación de elementos como números, letras y signos para elaborar diferentes operaciones aritméticas elementales.una ciencia formal que surgió del estudio de las figuras geométricas y la aritmética con números. si quieres saber algo mas relacionado o algo en concreto puedes buscar en la sig pagina : <a href="https://www.ferrovial.com/es/stem/algebra/#:~:text=¿Qué%20es%20el%20álgebra%3F,elaborar%20diferentes%20operaciones%20aritméticas%20elementales.">algebra</a>, <br>.',
-                'ciencia' : 'es el conjunto de conocimientos obtenidos a traves de la onservacion y el razonamiento',
-                'biologia' : 'es la rama de la cienci ue estudia a los seres vivos y sus interacciones',
-                'quimica' : 'la quimica estudia las sustancias y sus interacciones ',
-                'quien te creo' : 'mis creadores en este caso serian Santos Mijares Moises Eli, verdugo Bryan Alberto, Moreno Arechiga Cristopher',
-                'programacion': 'seria codificar en un lenguaje de progrmacion ya sea java, c++, phyton o cualquier otro tipo de lenguaje',
-                'sintax' : 'la sintaxis es lo que representa un lenguaje y su forma de codificar ',
-                'ingles': 'el idioma ingles es una herramienta fundamental en el mundo moderno, siendo utilizado como un medio de comunicacion global en diversos ambitos como negocios, tecnologia, etc, aprenderemos sobre diferentes tiempos verbales como el presente simple, pasado continuo y futuro perfecto asi como el uso de verbos modales como "can","should" y "must"',
-                'hola como estas' : 'hola estoy muy bien y tu',
-             'definicion': 'Una variable es un espacio de memoria que se utiliza para almacenar datos dentro de un programa.',
-             'tipos de datos': 'Incluyen enteros (int), números de punto flotante (float), cadenas de caracteres (string), booleanos (bool), entre otros.',
-             'asignación y uso': 'Las variables se asignan utilizando el operador de asignación "=" y se pueden utilizar para almacenar valores, realizar cálculos y más.',
-             'condicionales': 'Se utilizan para ejecutar ciertas acciones dependiendo de si una condición es verdadera o falsa. Ejemplos incluyen "if", "else", "else if".',
-             'bucles': 'Permiten repetir un bloque de código varias veces. Los bucles comunes incluyen "for", "while" y "do-while".',
-             'switch-Case':' Proporciona una forma de ejecutar diferentes secciones de código basadas en el valor de una expresión.',
-             'como estas meia': 'yo bien y tu ?',
-            
-             'definición': 'Una función es un bloque de código que realiza una tarea específica. Puede aceptar parámetros como entrada y devolver un valor como salida.',
-             'parámetros y Retorno': 'Los parámetros son variables que se pasan a una función para que la use durante su ejecución. El retorno es el valor que la función devuelve al finalizar su ejecución. ',
-             'alcance de Variables': 'Determina en qué partes del programa una variable puede ser referenciada y modificada. Las variables pueden ser locales (accesibles solo dentro de la función), globales (accesibles en todo el programa) o de instancia (accesibles dentro de una clase en la programación orientada a objetos).',
-
-             'bubble Sort': 'Comparación y intercambio de elementos adyacentes.',
-             'selection Sort': 'Selección iterativa del mínimo elemento y su intercambio.',
-             'insertion Sort': 'Inserción ordenada de elementos en una lista ordenada.',
-             'merge Sort': 'División recursiva y combinación ordenada de sublistas.',
-             'quicksort': 'Partición de la lista basada en un pivote y ordenamiento recursivo de sublistas.',
-
-             'listas Enlazadas': 'Elementos conectados secuencialmente, cada uno contiene un dato y una referencia al siguiente nodo.',
-             'pilas y Colas':' Estructuras de datos lineales que siguen el principio LIFO (Last In, First Out) y FIFO (First In, First Out) respectivamente.',
-             'arboles': 'Estructura jerárquica que consiste en nodos conectados por bordes, cada nodo tiene un padre y cero o más hijos.',
-             'grafos': 'Conjunto de vértices conectados por bordes, pueden ser dirigidos o no dirigidos.',
-             
-                
+                'ayuda': ' ¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial <br>Estoy aquí para ayudarte a aprender y comprender diferentes temas de una manera divertida e interactiva. Mi objetivo es facilitarte el acceso a la información y ayudarte a alcanzar tus metas educativas.<br>**¿En qué puedo ayudarte?** <br> Actualmente puedo ayudarte con el siguiente tema: <br> **Matemáticas:** <br> **Cálculo:** Te puedo ayudar a comprender los conceptos básicos del cálculo, como límites, derivadas e integrales. También puedo ayudarte a resolver problemas de cálculo y a aplicar tus conocimientos a diferentes áreas. <br> **Estadística:** Te puedo ayudar a entender los diferentes tipos de datos, cómo analizarlos e interpretarlos. También puedo ayudarte a realizar análisis estadísticos y a utilizar herramientas estadísticas para resolver problemas. <br> **Geometrías:** Te puedo ayudar a comprender las diferentes formas geométricas, sus propiedades y relaciones. También puedo ayudarte a resolver problemas de geometría y a aplicar tus conocimientos a diferentes áreas.<br>**¿Cómo puedo ayudarte?** <br>Puedo ayudarte de diferentes maneras:<br>**Explicaciones:** Te puedo proporcionar explicaciones claras y concisas de los diferentes conceptos.<br> **Ejemplos:** Te puedo mostrar ejemplos prácticos para ayudarte a comprender mejor los conceptos.<br>**Ejercicios:** Te puedo proponer ejercicios para que puedas practicar lo que has aprendido. <br>**Respuestas a tus preguntas:** Puedes preguntarme cualquier cosa que no entiendas y te responderé de la mejor manera posible.<br>**¿Cómo empezar?**<br>Es muy sencillo. Simplemente escribe "ayuda" para obtener más información sobre mí y los temas con los que puedo ayudarte. También puedes escribir directamente el tema que te interesa, como "matemáticas", para obtener más información sobre ese tema específico.<br>**¡Estoy aquí para ayudarte a aprender!**<br>No dudes en utilizar MEIA para ayudarte a aprender y comprender las matemáticas. Estoy aquí para ayudarte a alcanzar tus metas educativas.',
+                'matematicas': '¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial.<br>¿Qué quieres saber sobre matemáticas?<br>Puedo ayudarte con los siguientes temas:<br>Cálculo: Te puedo ayudar a comprender los conceptos básicos del cálculo, como límites, derivadas e integrales. También puedo ayudarte a resolver problemas de cálculo y a aplicar tus conocimientos a diferentes áreas.<br>Estadística: Te puedo ayudar a entender los diferentes tipos de datos, cómo analizarlos e interpretarlos. También puedo ayudarte a realizar análisis estadísticos y a utilizar herramientas estadísticas para resolver problemas.<br>Geometrías: Te puedo ayudar a comprender las diferentes formas geométricas, sus propiedades y relaciones. También puedo ayudarte a resolver problemas de geometría y a aplicar tus conocimientos a diferentes áreas.<br>¿Qué te gustaría aprender hoy?<br>Aquí hay algunos ejemplos de lo que puedo hacer:<br>Explicarte un concepto: Si no entiendes un concepto matemático, puedo explicártelo de una manera clara y concisa.<br>Darte un ejemplo: Si necesitas ayuda para comprender cómo aplicar un concepto matemático, puedo darte un ejemplo práctico.<br>Ayudarte a resolver un problema: Si tienes dificultades para resolver un problema matemático, puedo ayudarte a encontrar la solución paso a paso.<br>Recomendarte recursos: Si quieres aprender más sobre un tema matemático específico, puedo recomendarte libros, artículos o videos que te puedan ayudar.<br>No dudes en preguntarme cualquier cosa que no entiendas sobre matemáticas. Estoy aquí para ayudarte a aprender.',
+                'calculo': ' Cálculo<br>¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial. Estoy aquí para ayudarte a aprender y comprender el cálc<br>**¿Qué quieres saber sobre cálcul<br>Puedo ayudarte con los siguientes te<br>**Conceptos básicos del cálculo:** Límites, derivadas, integrales, teorema del valor medio, teorema fundamental del cálculo.<br>**Aplicaciones del cálculo:** Cálculo de áreas, volúmenes, velocidades, aceleraciones, máximos y mínimos.<br>**Técnicas de resolución de problemas:** Cálculo de derivadas e integrales de funciones básicas y compuestas, resolución de ecuaciones diferenciales.<br>**Herramientas para el cálculo:** Calculadoras, software matemá<br>**¿Qué te gustaría aprender hoy?**<br>**Aquí hay algunos ejemplos de lo que puedo hace<br> **Explicarte un concepto:** Si no entiendes un concepto de cálculo, puedo explicártelo de una manera clara y concisa.<br> **Darte un ejemplo:** Si necesitas ayuda para comprender cómo aplicar un concepto de cálculo, puedo darte un ejemplo práctico.<br> **Ayudarte a resolver un problema:** Si tienes dificultades para resolver un problema de cálculo, puedo ayudarte a encontrar la solución paso a paso.<br> **Recomendarte recursos:** Si quieres aprender más sobre un tema de cálculo específico, puedo recomendarte libros, artículos o videos que te puedan ayu<br>**No dudes en preguntarme cualquier cosa que no entiendas sobre cálculo. Estoy aquí para ayudarte a aprende',
+                'Estadistica': ' Estadística<br>¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial. Estoy aquí para ayudarte a aprender y comprender la estadística<br<br>**¿Qué quieres saber sobre estadística?**<br>Puedo ayudarte con los siguientes temas:<br>* **Conceptos básicos de la estadística:** Población, muestra, variables, tipos de datos, medidas de centralización y dispersión<br>* **Análisis de datos:** Gráficos y tablas, análisis descriptivo, inferencia estadística, pruebas de hipótesis, regresión lineal<br>* **Probabilidad:** Conceptos básicos de probabilidad, distribuciones de probabilidad, teorema de Bayes<br>* **Software estadístico:** R, SPSS, SAS.<br>**¿Qué te gustaría aprender hoy?**<br>**Aquí hay algunos ejemplos de lo que puedo hacer:**<br> **Explicarte un concepto:** Si no entiendes un concepto de estadística, puedo explicártelo de una manera clara y concisa<br> **Darte un ejemplo:** Si necesitas ayuda para comprender cómo aplicar un concepto de estadística, puedo darte un ejemplo práctico<br> **Ayudarte a resolver un problema:** Si tienes dificultades para resolver un problema de estadística, puedo ayudarte a encontrar la solución paso a paso<br> **Recomendarte recursos:** Si quieres aprender más sobre un tema de estadística específico, puedo recomendarte libros, artículos o videos que te puedan ayudar<br<br>**No dudes en preguntarme cualquier cosa que no entiendas sobre estadística. Estoy aquí para ayudarte a aprender.*',
 
             };
             
