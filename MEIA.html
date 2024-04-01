@@ -1,216 +1,213 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <H2><strong><CENTER>MEIA</CENTER></strong></H2>
-    <title>MEIA</title>
-    <style>
-        /* Estilos para el cuerpo */
-        
-        body, #chat-container, #chat-messages, #user-input {
-            font-family: Arial, sans-serif;
-            color: rgb(2, 2, 2);
-        }
-        body {
-            background-color: #6387b5
-        }
-        #chat-container {
-            border: 2px solid #000000;
-            padding: 15px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        #chat-messages {
-            height: 498px;
-            overflow-y: auto;
-            border-bottom: 3px solid #000000;
-            margin-bottom: 15px;
-        }
-        #user-input {
-            width: 97%;
-            padding: 5px;
-            border: 2px solid #000000;
-            background-color: rgb(255, 255, 255);
-        }
-        button {
-            background-color: #1807d8; 
-            color: white; 
-            padding: 1px 2px;
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background-color 0.3s ease; 
-            margin: 5px; 
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
-            display: block; 
-            width: 20%; 
-        }
-
-        button:hover {
-            background-color: #5b52c2;
-        }
-        
-        
-    </style>
+  <title>MEIA con Red Neuronal</title>
+  <!-- Importación de TensorFlow.js -->
+  <script src="https://unpkg.com/@tensorflow/tfjs@3.9.0"></script>
+  <!-- Estilos CSS -->
+  <style>
+    /* Modificaciones al código CSS */
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Estilo del contenedor del chat */
+    #chat-container {
+      background-color: #e8f0fe;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      padding: 30px;
+      margin: auto;
+    }
+    
+    /* Estilo de los mensajes del chat */
+    #chat-messages {
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f7f9fa;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    /* Estilo del campo de entrada del usuario */
+    #user-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cccccc;
+      border-radius: 25px;
+      font-size: 16px;
+      margin-top: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Estilo del botón */
+    button {
+      background-color: #007bff;
+      color: #ffffff;
+      padding: 1px 2px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      width: 10%;
+      display: block;
+      border-radius: 16px;
+    }
+    
+    /* Efecto hover del botón */
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    /* Estilos para la barra de desplazamiento */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #555;
+    }
+  </style>
 </head>
 <body onload="handleOnLoad()">
-    <!-- Botón para reiniciar la conversación -->
-    <button onclick="clearConversation()">Nuevo Chat</button>
-    <!-- Botón para guardar la conversación -->
-    <!--<button onclick="createNewChat()">guardar y regresar</button>-->
+  <script>
+    // Creación del modelo de red neuronal con TensorFlow.js
+    const model = tf.sequential();
+    model.add(tf.layers.dense({units: 128, activation: 'relu', inputShape: [10]}));
+    model.add(tf.layers.dense({units: 64, activation: 'relu'}));
+    model.add(tf.layers.dense({units: 10, activation: 'softmax'}));
 
-    <script>
-        var previousChat = ''; // Variable para guardar el chat anterior
-        function handleOnLoad() {
-            // Agregar mensaje de bienvenida
-            addMessage("<strong>MEIA:</strong> Hola, soy tu asistente personal MEIA.");
-        
-            // Agregar advertencia sobre características no funcionales
-            addMessage("<strong>MEIA:</strong> Algunas características pueden no funcionar correctamente en este momento pero intentamos mejorar mi sofwere.");
-        }
+    let previousChat = ''; // Variable para almacenar el historial del chat
 
-        /*el scrip podria ser donde el usuario al momento de picarle enter  guarda el valor y imprime en vista tambien se puede encontrar un json o algo asi se puede decir 
-        tambien se da el valor a MEIA cconforme el usuario meta los comandos ya establecidos y donde agarra la tecla enter como accion con el comando 
-        keypressed */
-       
-      function sendMessage() {
-            var userInput = document.getElementById('user-input').value;
-            document.getElementById('user-input').value = '';
-           //palabras clave a respuestas predefinidas
-            var knownAnswersByKeywords = {
-                'hola': 'hola como estas soy MEIA tu asistente personal, si deseas consultar la lista de palabras clave escribe la palabara "ayuda" <br>.',
-                'ayuda': ' ¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial <br>Estoy aquí para ayudarte a aprender y comprender diferentes temas de una manera divertida e interactiva. Mi objetivo es facilitarte el acceso a la información y ayudarte a alcanzar tus metas educativas.<br>**¿En qué puedo ayudarte?** <br> Actualmente puedo ayudarte con el siguiente tema: <br> **Matemáticas:** <br> **Cálculo:** Te puedo ayudar a comprender los conceptos básicos del cálculo, como límites, derivadas e integrales. También puedo ayudarte a resolver problemas de cálculo y a aplicar tus conocimientos a diferentes áreas. <br> **Estadística:** Te puedo ayudar a entender los diferentes tipos de datos, cómo analizarlos e interpretarlos. También puedo ayudarte a realizar análisis estadísticos y a utilizar herramientas estadísticas para resolver problemas. <br> **Geometrías:** Te puedo ayudar a comprender las diferentes formas geométricas, sus propiedades y relaciones. También puedo ayudarte a resolver problemas de geometría y a aplicar tus conocimientos a diferentes áreas.<br>**¿Cómo puedo ayudarte?** <br>Puedo ayudarte de diferentes maneras:<br>**Explicaciones:** Te puedo proporcionar explicaciones claras y concisas de los diferentes conceptos.<br> **Ejemplos:** Te puedo mostrar ejemplos prácticos para ayudarte a comprender mejor los conceptos.<br>**Ejercicios:** Te puedo proponer ejercicios para que puedas practicar lo que has aprendido. <br>**Respuestas a tus preguntas:** Puedes preguntarme cualquier cosa que no entiendas y te responderé de la mejor manera posible.<br>**¿Cómo empezar?**<br>Es muy sencillo. Simplemente escribe "ayuda" para obtener más información sobre mí y los temas con los que puedo ayudarte. También puedes escribir directamente el tema que te interesa, como "matemáticas", para obtener más información sobre ese tema específico.<br>**¡Estoy aquí para ayudarte a aprender!**<br>No dudes en utilizar MEIA para ayudarte a aprender y comprender las matemáticas. Estoy aquí para ayudarte a alcanzar tus metas educativas.',
-                'matematicas': '¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial.<br>¿Qué quieres saber sobre matemáticas?<br>Puedo ayudarte con los siguientes temas:<br>Cálculo: Te puedo ayudar a comprender los conceptos básicos del cálculo, como límites, derivadas e integrales. También puedo ayudarte a resolver problemas de cálculo y a aplicar tus conocimientos a diferentes áreas.<br>Estadística: Te puedo ayudar a entender los diferentes tipos de datos, cómo analizarlos e interpretarlos. También puedo ayudarte a realizar análisis estadísticos y a utilizar herramientas estadísticas para resolver problemas.<br>Geometrías: Te puedo ayudar a comprender las diferentes formas geométricas, sus propiedades y relaciones. También puedo ayudarte a resolver problemas de geometría y a aplicar tus conocimientos a diferentes áreas.<br>¿Qué te gustaría aprender hoy?<br>Aquí hay algunos ejemplos de lo que puedo hacer:<br>Explicarte un concepto: Si no entiendes un concepto matemático, puedo explicártelo de una manera clara y concisa.<br>Darte un ejemplo: Si necesitas ayuda para comprender cómo aplicar un concepto matemático, puedo darte un ejemplo práctico.<br>Ayudarte a resolver un problema: Si tienes dificultades para resolver un problema matemático, puedo ayudarte a encontrar la solución paso a paso.<br>Recomendarte recursos: Si quieres aprender más sobre un tema matemático específico, puedo recomendarte libros, artículos o videos que te puedan ayudar.<br>No dudes en preguntarme cualquier cosa que no entiendas sobre matemáticas. Estoy aquí para ayudarte a aprender.',
-                'calculo': ' Cálculo<br>¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial. Estoy aquí para ayudarte a aprender y comprender el cálc<br>**¿Qué quieres saber sobre cálcul<br>Puedo ayudarte con los siguientes te<br>**Conceptos básicos del cálculo:** Límites, derivadas, integrales, teorema del valor medio, teorema fundamental del cálculo.<br>**Aplicaciones del cálculo:** Cálculo de áreas, volúmenes, velocidades, aceleraciones, máximos y mínimos.<br>**Técnicas de resolución de problemas:** Cálculo de derivadas e integrales de funciones básicas y compuestas, resolución de ecuaciones diferenciales.<br>**Herramientas para el cálculo:** Calculadoras, software matemá<br>**¿Qué te gustaría aprender hoy?**<br>**Aquí hay algunos ejemplos de lo que puedo hace<br> **Explicarte un concepto:** Si no entiendes un concepto de cálculo, puedo explicártelo de una manera clara y concisa.<br> **Darte un ejemplo:** Si necesitas ayuda para comprender cómo aplicar un concepto de cálculo, puedo darte un ejemplo práctico.<br> **Ayudarte a resolver un problema:** Si tienes dificultades para resolver un problema de cálculo, puedo ayudarte a encontrar la solución paso a paso.<br> **Recomendarte recursos:** Si quieres aprender más sobre un tema de cálculo específico, puedo recomendarte libros, artículos o videos que te puedan ayu<br>**No dudes en preguntarme cualquier cosa que no entiendas sobre cálculo. Estoy aquí para ayudarte a aprende',
-                'Estadistica': ' Estadística<br>¡Hola! Soy MEIA, tu maestro educativo de inteligencia artificial. Estoy aquí para ayudarte a aprender y comprender la estadística<br<br>**¿Qué quieres saber sobre estadística?**<br>Puedo ayudarte con los siguientes temas:<br>* **Conceptos básicos de la estadística:** Población, muestra, variables, tipos de datos, medidas de centralización y dispersión<br>* **Análisis de datos:** Gráficos y tablas, análisis descriptivo, inferencia estadística, pruebas de hipótesis, regresión lineal<br>* **Probabilidad:** Conceptos básicos de probabilidad, distribuciones de probabilidad, teorema de Bayes<br>* **Software estadístico:** R, SPSS, SAS.<br>**¿Qué te gustaría aprender hoy?**<br>**Aquí hay algunos ejemplos de lo que puedo hacer:**<br> **Explicarte un concepto:** Si no entiendes un concepto de estadística, puedo explicártelo de una manera clara y concisa<br> **Darte un ejemplo:** Si necesitas ayuda para comprender cómo aplicar un concepto de estadística, puedo darte un ejemplo práctico<br> **Ayudarte a resolver un problema:** Si tienes dificultades para resolver un problema de estadística, puedo ayudarte a encontrar la solución paso a paso<br> **Recomendarte recursos:** Si quieres aprender más sobre un tema de estadística específico, puedo recomendarte libros, artículos o videos que te puedan ayudar<br<br>**No dudes en preguntarme cualquier cosa que no entiendas sobre estadística. Estoy aquí para ayudarte a aprender.*',
-
-            };
-            
-            
-            
-            /*switch(userInput.toLowerCase()) {
-                case 'hola':
-                    message = 'hola como estas soy meia tu asistente personal';
-                    break;
-                case 'quien te creo ?':
-                    message = 'mis creadores son Moises, Bryan  y cristhopher';
-                    break;
-                case 'matematicas':
-                    message = 'hola por el momento no tengo resultados dados sobre matematicas pero si gustaas puedes cnsultar';
-                    break;
-                case 'jugar':
-                    message = 'yes ha war yu';
-                    break;
-               case '':
-                    message = 'yes ha war yu';
-                    break;
-               case 'sabes hablar ingles':
-                    message = 'yes ha war yu';
-                    break;
-               case 'sabes hablar ingles':
-                    message = 'yes ha war yu';
-                    break;
-
-                case 'pipi':
-                    message = 'pipipii ingresa un resultado';
-                    break;
-                case '/help':
-                    message = 'matematicas, <br> jugar <br> quien te creo? <br> sabes hablar ingles <br> hola como estas <br> hola como etas <br> Estos serian todos mis comandos por el momento mi version actual es un prototipo, ten por seguro que voy a mejorar y mejorare como chatbot hasta ser una gra IA que te pueda ayudar';
-                    break;
-                case 'hola como estas':
-                    message = 'hola yo bien y tu';
-                    break;
-                case 'jugar':
-                    message = 'te estan siguiendo que haces, quieto';
-                    break;
-                case 'correr':
-                    message = 'bien te has ido muy lejos a donde iras, casa , cueva';
-                    break;
-                case 'quieto':
-                    message = 'el te a encontrado moriste';
-                    break;
-                case 'casa':
-                    message = 'bien sobreviviste a eso en hora buena ';
-                    break;
-                case 'el te sigue todavia q haras atacar, uir':
-                    message = 'hola yo bien y tu';
-                    break;
-                case 'atacar':
-                    message = 'mala desicion';
-                    break;
-                case 'uir':
-                    message = 'felicidades has sobrevivido';
-                    break;
-               default:
-                    message = 'perdon esa informacion no te la puedo dar por el momento.';
-                    break;
-            }*/
-           // Buscar palabras clave en el mensaje del usuario
-    for (var keyword in knownAnswersByKeywords) {
-        if(userInput.toLowerCase().includes(keyword)) {
-            var messageElement = document.createElement('div');
-            messageElement.innerHTML = '<strong>You:</strong> ' + userInput;
-            document.getElementById('chat-messages').appendChild(messageElement);
-
-            var responseElement = document.createElement('div');
-            responseElement.innerHTML = '<strong>MEIA:</strong> ' + knownAnswersByKeywords[keyword];
-            document.getElementById('chat-messages').appendChild(responseElement);
-
-            // Guardar la conversación actual
-            previousChat += messageElement.outerHTML + responseElement.outerHTML;
-            return; // Salir de la función después de encontrar la primera coincidencia
-        }
+    // Función que se ejecuta al cargar la página
+    function handleOnLoad() {
+      addMessage("<strong>MEIA:</strong> Hola, soy tu asistente personal MEIA.");
+      addMessage("<strong>MEIA:</strong> Algunas características pueden no funcionar correctamente en este momento pero intentamos mejorar mi software.");
     }
 
-    // Si no se encontró ninguna palabra clave, enviar un mensaje predeterminado
-    var messageElement = document.createElement('div');
-    messageElement.innerHTML = '<strong>You:</strong> ' + userInput;
-    document.getElementById('chat-messages').appendChild(messageElement);
+    // Función para enviar mensajes
+    function sendMessage() {
+      const userInput = document.getElementById('user-input').value;
+      document.getElementById('user-input').value = '';
+      const processedMessage = processUserMessage(userInput);
+      const response = generateResponse(processedMessage);
+      addMessage(`<strong>Usuario:</strong> ${userInput}`);
+      addMessage(`<strong>MEIA:</strong> ${response}`);
+      previousChat += `<strong>Usuario:</strong> ${userInput}<br><strong>MEIA:</strong> ${response}<br>`;
+    }
 
-    var responseElement = document.createElement('div');
-    responseElement.innerHTML = '<strong>MEIA:</strong> Lo siento, no tengo información sobre eso.';
-    document.getElementById('chat-messages').appendChild(responseElement);
+    // Función para manejar la tecla "Enter"
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
 
-    // Guardar la conversación actual
-    previousChat += messageElement.outerHTML + responseElement.outerHTML;
-}
+    // Función para agregar mensajes al chat
+    function addMessage(message) {
+      document.getElementById('chat-messages').innerHTML += `<p>${message}</p>`;
+    }
 
-       // Función para manejar la pulsación de tecla
-       function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-            
-            
+    // Función para procesar el mensaje del usuario
+    function processUserMessage(message) {
+      return message;
+    }
+
+    // Función para generar la respuesta del asistente
+    function generateResponse(message) {
+      // Array de comandos y respuestas del asistente
+      const commands = [
+        // Comandos relacionados con matemáticas
+        { keyword: 'suma', response: handleMathOperation(message, 'suma', (a, b) => a + b) },
+        { keyword: 'resta', response: handleMathOperation(message, 'resta', (a, b) => a - b) },
+        { keyword: 'multiplicación', response: handleMathOperation(message, 'multiplicación', (a, b) => a * b) },
+        { keyword: 'división', response: handleMathOperation(message, 'división', (a, b) => a / b) },
+        { keyword: 'raíz cuadrada', response: handleSquareRoot(message) },
+        { keyword: 'potencia', response: handlePowerOperation(message) },
+        // Comandos relacionados con información general
+        { keyword: 'hola', response: 'Hola, ¿cómo puedo ayudarte?' },
+        { keyword: 'adiós', response: 'Hasta luego, ¡que tengas un buen día!' },
+        { keyword: 'historia', response: 'La historia es el estudio de los eventos pasados y cómo afectan el presente. ¿Te gustaría saber más sobre un período histórico específico?' },
+        { keyword: 'ciencia', response: 'La ciencia es el estudio sistemático de la naturaleza y el comportamiento de la materia y el universo. ¿Te gustaría aprender sobre alguna rama específica de la ciencia?' },
+        { keyword: 'matemáticas', response: 'Las matemáticas es el estudio de la cantidad, estructura, espacio y cambio. ¿Te gustaría resolver algún problema matemático o aprender sobre un concepto específico?' },
+        { keyword: 'geografía', response: 'La geografía es el estudio de la superficie terrestre y las relaciones espaciales de los fenómenos humanos y naturales. ¿Te gustaría conocer datos interesantes sobre algún país o región?' },
+        { keyword: 'arte', response: 'El arte es la expresión o aplicación de la creatividad y la imaginación, generalmente en forma visual o auditiva. ¿Te gustaría aprender sobre diferentes movimientos artísticos o artistas famosos?' },
+        { keyword: 'cultura', response: 'La cultura se refiere al conjunto de formas y expresiones que caracterizan a una sociedad en un período determinado. ¿Te gustaría conocer más sobre las tradiciones y costumbres de diferentes culturas?' }
+      ];
+
+      // Búsqueda de comandos en el mensaje del usuario
+      for (const command of commands) {
+        if (message.includes(command.keyword)) {
+          return command.response;
         }
-       // Función para borrar la conversación actual
-       function clearConversation() {
-            // Guardar la conversación actual antes de borrarla
-            previousChat = document.getElementById('chat-messages').innerHTML;
-            document.getElementById('chat-messages').innerHTML = '';
-        }
+      }
 
-        // Función para crear un nuevo chat cargando la conversación anterior
-        function createNewChat() {
-            document.getElementById('chat-messages').innerHTML = previousChat;
-        }
-        function addMessage(messageText) {
-            // Crear un elemento div para el mensaje y establecer su contenido
-            var messageElement = document.createElement('div');
-            messageElement.innerHTML = messageText;
+      return 'Lo siento, no puedo responder a eso en este momento.';
+    }
 
-            // Agregar el mensaje al contenedor de mensajes del chat
-            document.getElementById('chat-messages').appendChild(messageElement);
+    // Función para manejar operaciones matemáticas
+    function handleMathOperation(message, operationName, operationFunction) {
+      const numbers = message.match(/\d+/g);
+      if (numbers && numbers.length >= 2) {
+        const result = operationFunction(parseInt(numbers[0]), parseInt(numbers[1]));
+        return `La ${operationName} de ${numbers[0]} y ${numbers[1]} es ${result}.`;
+      }
+      return `Por favor, proporciona al menos dos números para ${operationName}.`;
+    }
 
-            // Guardar el mensaje en la conversación actual
-            previousChat += messageElement.outerHTML;
-        }
-    </script>
-    <!--Contenedor del chat-->
-    <div id="chat-container">
-        <!-- Contenedor de mensajes del chat-->
-        <div id="chat-messages"></div>
-        <!-- Entrada de texto para que el usuario escriba mensajes -->
-        <input type="text" id="user-input" placeholder="escribe aqui" onkeypress="handleKeyPress(event)">
-    </div>
+    // Función para calcular la raíz cuadrada
+    function handleSquareRoot(message) {
+      const number = message.match(/\d+/);
+      if (number) {
+        const result = Math.sqrt(parseInt(number[0]));
+        return `La raíz cuadrada de ${number[0]} es ${result}.`;
+      }
+      return 'Por favor, proporciona un número para calcular la raíz cuadrada.';
+    }
+
+    // Función para calcular la potencia
+    function handlePowerOperation(message) {
+      const numbers = message.match(/\d+/g);
+      if (numbers && numbers.length >= 2) {
+        const result = Math.pow(parseInt(numbers[0]), parseInt(numbers[1]));
+        return `La potencia de ${numbers[0]} elevado a ${numbers[1]} es ${result}.`;
+      }
+      return 'Por favor, proporciona dos números para calcular la potencia.';
+    }
+
+    // Función para limpiar la conversación
+    function clearConversation() {
+      previousChat = document.getElementById('chat-messages').innerHTML;
+      document.getElementById('chat-messages').innerHTML = '';
+    }
+  </script>
+
+  <!-- Botón para iniciar un nuevo chat -->
+  <button onclick="clearConversation()">Nuevo Chat</button>
+  
+  <!-- Contenedor del chat -->
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <!-- Campo de entrada del usuario -->
+    <input type="text" id="user-input" placeholder="Escribe aquí" onkeypress="handleKeyPress(event)">
+  </div>
 </body>
 </html>
