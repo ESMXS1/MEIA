@@ -1,0 +1,249 @@
+---
+---
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MEIA con Red Neuronal</title>
+  <meta charset="UTF-8">
+  <!-- Estilos CSS -->
+  <style>
+    /* Modificaciones al código CSS */
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Estilo del contenedor del chat */
+    #chat-container {
+      background-color: #e8f0fe;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      padding: 30px;
+      margin: auto;
+    }
+    
+    /* Estilo de los mensajes del chat */
+    #chat-messages {
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f7f9fa;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    /* Estilo del campo de entrada del usuario */
+    #user-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cccccc;
+      border-radius: 25px;
+      font-size: 16px;
+      margin-top: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Estilo del botón */
+    button {
+      background-color: #007bff;
+      color: #ffffff;
+      padding: 1px 2px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      width: 10%;
+      display: block;
+      border-radius: 16px;
+    }
+    
+    /* Efecto hover del botón */
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    /* Estilos para la barra de desplazamiento */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <!-- Botón para iniciar un nuevo chat -->
+  <button onclick="clearConversation()">Nuevo Chat</button>
+  
+  <!-- Contenedor del chat -->
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <!-- Campo de entrada del usuario -->
+    <input type="text" id="user-input" placeholder="Escribe aquí" user-text-input>
+  </div>
+</body>
+</html>
+<script>
+  let previousChat = ''; // Variable para almacenar el historial del chat
+
+  addMessage("<strong>MEIA:</strong> Hola, soy tu asistente personal MEIA.");
+  addMessage("<strong>MEIA:</strong> Algunas características pueden no funcionar correctamente en este momento pero intentamos mejorar mi software.");
+
+  // Función para enviar mensajes
+  function sendMessage() {
+    const userInput = document.getElementById('user-input').value;
+    document.getElementById('user-input').value = '';
+    const processedMessage = processUserMessage(userInput);
+    const response = generateResponse(processedMessage);
+    addMessage(`<strong>Usuario:</strong> ${userInput}`);
+    addMessage(`<strong>MEIA:</strong> ${response}`);
+    previousChat += `<strong>Usuario:</strong> ${userInput}<br><strong>MEIA:</strong> ${response}<br>`;
+  }
+
+  // Función para manejar la tecla "Enter"
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  }
+
+  // Función para agregar mensajes al chat
+  function addMessage(message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('p');
+    chatMessages.appendChild(messageElement);
+
+    let index = 0;
+
+    const addMessageContent = () => {
+      if (index < message.length) {
+        if (message.charAt(index) === '<') {
+          // Si encontramos un '<', avanzamos hasta encontrar '>'
+          const endIndex = message.indexOf('>', index);
+          if (endIndex !== -1) {
+            // Agregamos la etiqueta completa al mensaje
+            messageElement.innerHTML += message.substring(index, endIndex + 1);
+            index = endIndex + 1;
+          }
+        } else {
+          // Agregamos caracteres normales
+          messageElement.textContent += message.charAt(index);
+          index++;
+        }
+        setTimeout(addMessageContent, 20); // Ajusta el tiempo de retraso aquí (en milisegundos)
+      }
+    };
+
+    addMessageContent();
+  }
+
+  // Función para procesar el mensaje del usuario
+  function processUserMessage(message) {
+    return message;
+  }
+
+  // Función para generar la respuesta del asistente
+  function generateResponse(message) {
+    // Array de comandos y respuestas del asistente
+    const commands = [
+      // Comandos relacionados con matemáticas
+      { keyword: 'suma', response: handleMathOperation(message, 'suma', (a, b) => a + b) },
+      { keyword: 'resta', response: handleMathOperation(message, 'resta', (a, b) => a - b) },
+      { keyword: 'multiplicación', response: handleMathOperation(message, 'multiplicación', (a, b) => a * b) },
+      { keyword: 'división', response: handleMathOperation(message, 'división', (a, b) => a / b) },
+      { keyword: 'raíz cuadrada', response: handleSquareRoot(message) },
+      { keyword: 'potencia', response: handlePowerOperation(message) },
+      { keyword: 'cálculo diferencial', response: 'El cálculo diferencial es una rama de las matemáticas que se centra en el estudio del cambio instantáneo. Se utiliza para resolver problemas relacionados con la tasa de cambio y la acumulación de cantidades.' },
+      { keyword: 'ecología', response: 'La ecología es la ciencia que estudia las relaciones entre los organismos y su entorno. Se ocupa de la distribución y la abundancia de los seres vivos, así como de las interacciones entre ellos y su ambiente.' },
+      { keyword: 'programación en el servidor', response: 'La programación en el servidor se refiere al desarrollo de aplicaciones o servicios que se ejecutan en un servidor web. Se utiliza para crear funcionalidades dinámicas en sitios web, como la gestión de bases de datos, la autenticación de usuarios y la generación de contenido personalizado.' },
+      { keyword: 'programación en el cliente', response: 'La programación en el cliente se refiere al desarrollo de aplicaciones o scripts que se ejecutan en el navegador web del usuario. Se utiliza para mejorar la experiencia del usuario en sitios web mediante la interactividad y la manipulación del contenido.' },
+      { keyword: 'desarrollo de páginas web', response: 'El desarrollo de páginas web implica la creación y el diseño de sitios web para Internet o una intranet. Incluye la planificación, el diseño visual, la codificación, la implementación y el mantenimiento de sitios web para diversos propósitos.' },
+
+      // Comandos relacionados con información general
+      { keyword: 'hola', response: 'Hola, ¿cómo puedo ayudarte?' },
+      { keyword: 'adiós', response: 'Hasta luego, ¡que tengas un buen día!' },
+      { keyword: 'gracias', response: 'Si tienes alguna otra duda no esperes y pregunta!' },
+      { keyword: 'historia', response: 'La historia es el estudio de los eventos pasados y cómo afectan el presente. ¿Te gustaría saber más sobre un período histórico específico?' },
+      { keyword: 'ciencia', response: 'La ciencia es el estudio sistemático de la naturaleza y el comportamiento de la materia y el universo. ¿Te gustaría aprender sobre alguna rama específica de la ciencia?' },
+      { keyword: 'matemáticas', response: 'Las matemáticas es el estudio de la cantidad, estructura, espacio y cambio. ¿Te gustaría resolver algún problema matemático o aprender sobre un concepto específico?' },
+      { keyword: 'geografía', response: 'La geografía es el estudio de la superficie terrestre y las relaciones espaciales de los fenómenos humanos y naturales. ¿Te gustaría conocer datos interesantes sobre algún país o región?' },
+      { keyword: 'arte', response: 'El arte es la expresión o aplicación de la creatividad y la imaginación, generalmente en forma visual o auditiva. ¿Te gustaría aprender sobre diferentes movimientos artísticos o artistas famosos?' },
+      { keyword: 'cultura', response: 'La cultura se refiere al conjunto de formas y expresiones que caracterizan a una sociedad en un período determinado. ¿Te gustaría conocer más sobre las tradiciones y costumbres de diferentes culturas?' }
+    ];
+
+    // Búsqueda de comandos en el mensaje del usuario
+    for (const command of commands) {
+      if (message.includes(command.keyword)) {
+        return command.response;
+      }
+    }
+
+    return 'Lo siento, no puedo responder a eso en este momento.';
+  }
+
+  // Función para manejar operaciones matemáticas
+  function handleMathOperation(message, operationName, operationFunction) {
+    const numbers = message.match(/\d+/g);
+    if (numbers && numbers.length >= 2) {
+      const result = operationFunction(parseInt(numbers[0]), parseInt(numbers[1]));
+      return `La ${operationName} de ${numbers[0]} + ${numbers[1]} es igual a ${result}.`;
+    }
+    return `Por favor, proporciona al menos dos números para ${operationName}.`;
+  }
+
+  // Función para calcular la raíz cuadrada
+  function handleSquareRoot(message) {
+    const number = message.match(/\d+/);
+    if (number) {
+      const result = Math.sqrt(parseInt(number[0]));
+      return `La raíz cuadrada de ${number[0]} es ${result}.`;
+    }
+    return 'Por favor, proporciona un número para calcular la raíz cuadrada.';
+  }
+
+  // Función para calcular la potencia
+  function handlePowerOperation(message) {
+    const numbers = message.match(/\d+/g);
+    if (numbers && numbers.length >= 2) {
+      const result = Math.pow(parseInt(numbers[0]), parseInt(numbers[1]));
+      return `La potencia de ${numbers[0]} elevado a ${numbers[1]} es ${result}.`;
+    }
+    return 'Por favor, proporciona dos números para calcular la potencia.';
+  }
+
+  // Función para limpiar la conversación
+  function clearConversation() {
+    previousChat = document.getElementById('chat-messages').innerHTML;
+    document.getElementById('chat-messages').innerHTML = '';
+  }
+
+  // Find our component DOM on the page.
+  const inputs = document.querySelectorAll('[user-text-input]');
+
+  // Add event listeners to fire confetti when a button is clicked.
+  inputs.forEach((input) => {
+    console.log(input);
+    input.addEventListener('keypress', (event) => {
+      console.log("keypress");
+      console.log(event);
+      handleKeyPress(event);
+    });
+  });
+</script>
